@@ -3,13 +3,15 @@ package com.ibs.timesheet.service;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 import com.ibs.timesheet.model.TimesheetEntry;
 import com.ibs.timesheet.repository.TmsEntiresRepo;
 
+@Service
 public class TmsServiceImpl implements TmsService{
 	
-	//@Autowired
+	@Autowired
 	TmsEntiresRepo entiresRepo;
 
 	@Override

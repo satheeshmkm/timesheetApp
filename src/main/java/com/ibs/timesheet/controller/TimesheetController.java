@@ -17,7 +17,7 @@ import com.ibs.timesheet.service.TmsService;
 @RestController
 public class TimesheetController {
 	
-	//@Autowired
+	@Autowired
 	TmsService tmsService;
 	
 	@RequestMapping(value = "/submitTimesheet" , method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE,
