@@ -15,41 +15,191 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/underscore.js/1.8.3/underscore.js" type="text/javascript"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/backbone.js/1.2.3/backbone-min.js" type="text/javascript"></script>
 
+    <link rel="stylesheet" href="http://code.jquery.com/ui/1.11.4/themes/smoothness/jquery-ui.css">
+    <script src="http://code.jquery.com/jquery-1.10.2.js"></script>
+    <script src="http://code.jquery.com/ui/1.11.4/jquery-ui.js"></script>
 
+
+    <script id="dateRange" type="text/x-handlebars-template">
+    <b>From </b><input type = "text" id="from" style="width:250px;display: inline;" class = "form-control"/>
+    <b>To </b><input type = "text" id="to"  style="width:250px;display: inline;" class = "form-control"/>
+    <button type="button" id="deleteRow" class="btn-default">Show</button>
+    </script>
+
+
+    <script id="renderButton" type="text/x-handlebars-template">
+            {{#if this.insert}}
+                <button type = "button" id ="addNewBtn" class = "btn btn-info">Add New Row</button>
+                <button type="button" id="deleteRow" class="btn btn-danger">Delete</button>
+                <button type = "button" class = "btn btn-success">Save</button>
+            {{/if}}
+            {{#if this.admin}}
+                <button type = "button" class = "btn btn-success">Approve</button>
+                <button type="button" id="deleteRow" class="btn btn-danger">Reject</button>
+            {{/if}}
+            {{#if this.view}}
+                <button type = "button" class = "btn btn-success">Send For Approval</button>
+                <button type="button" id="deleteRow" class="btn btn-danger">Delete</button>
+            {{/if}}
+    </script>
+
+    <script id="tableHeadings" type="text/x-handlebars-template">
+        <table class="table table-condensed" id="rowTable">
+        <tr class = "active">
+            <th></th>
+            <th>Project Code</th>
+            <th>Project Name</th>
+            <th>Project Phase</th>
+            <th>Classification</th>
+            <th>Activity</th>
+            <th>BugRef</th>
+            <th>Date</th>
+            <th>Effort(Hours)</th>
+        </tr>
+        </table>
+    </script>
 
     <script id="tableRows" type="text/x-handlebars-template">
       <tr>
-        <td class="tdHeight"><input type="checkbox">&nbsp</td>
-      	<td class="tdHeight"><input type = "text" class = "form-control" /></td>
-	    <td class="tdHeight"><input type = "text" class = "form-control" /></td>
-      	<td class="tdHeight"><input type = "text" class = "form-control" /></td>
-      	<td class="tdHeight"><input type = "text" class = "form-control"/></td>
-	    <td class="tdHeight"><input type = "text" class = "form-control"/></td>
-      	<td class="tdHeight"><input type = "text" class = "form-control"/></td>
-      	<td class="tdHeight"><input type = "text" name="datePicker" class = "form-control"/></td>
-      	<td class="tdHeight"><input type = "text" class = "form-control"/></td>
+        <td class="tdHeight"><input type="checkbox" name="delTrue">&nbsp</td>
+      	<td class="tdHeight"><input type = "text" {{#if this.projectCode}} value="{{this.projectCode}}" disabled {{/if}} class = "form-control" /></td>
+	    <td class="tdHeight"><input type = "text" {{#if this.projectName}} value="{{this.projectName}}" disabled {{/if}} class = "form-control" /></td>
+      	<td class="tdHeight"><input type = "text" {{#if this.projectPhase}} value="{{this.projectPhase}}" disabled {{/if}} class = "form-control" /></td>
+      	<td class="tdHeight"><input type = "text" {{#if this.classification}} value="{{this.classification}}" disabled {{/if}} class = "form-control"/></td>
+	    <td class="tdHeight"><input type = "text" {{#if this.activity}} value="{{this.activity}}" disabled {{/if}} class = "form-control"/></td>
+      	<td class="tdHeight"><input type = "text" {{#if this.bugRef}} value="{{this.bugRef}}" disabled {{/if}} class = "form-control"/></td>
+      	<td class="tdHeight"><input type = "text" {{#if this.date}} value="{{this.date}}" disabled {{/if}} name="datePicker" class = "form-control"/></td>
+      	<td class="tdHeight"><input type = "text" {{#if this.effort}} value="{{this.effort}}" disabled {{/if}} class = "form-control"/></td>
       </tr>
    </script>
 
    <script>
 
-	$(document).ready(function(){
-    		$("#addNewBtn").bind("click", function(){addNewRow();});
-	});
-
 	function addNewRow() {
-
 	  var theTemplateScript = $("#tableRows").html();
 	  $("#rowTable").append(theTemplateScript);
 	  $("input[name^='datePicker']").datepicker();
 	}
 
-   </script>
-   <script>
-   function removeChld(element){
-        alert(element.parentNode.parentNode);
-       document.getElementByID('tableRows').removeChild(element.parentNode.parentNode);
+   function removeRow(){
+        $("input[name^='delTrue']").each(function() {
+            if($(this).prop("checked") == true){
+               this.parentElement.parentElement.remove();
+            }
+         });
    }
+   function clearDivs(){
+        $("#main").empty();
+        $("#rangePicker").empty();
+   }
+    </script>
+
+   <script>
+   //==========================================================
+   //                   view
+   //===========================================================
+
+   var tableHeadingsView = Backbone.View.extend({
+       initialize:function(){
+            this.render();
+       }
+       ,
+       render: function() {
+            var theTemplateScript = $("#tableHeadings").html();
+            $("#main").append(theTemplateScript);
+       }
+   });
+
+    var insertView = Backbone.View.extend({
+       initialize:function(){
+            this.render();
+       }
+       ,
+       render: function(model) {
+            var theTemplateScript = $("#tableRows").html();
+            var template = Handlebars.compile(theTemplateScript);
+            $("#main").append(template(model));
+       }
+   });
+
+   var buttonsView = Backbone.View.extend({
+          render: function(types) {
+               var theTemplateScript = $("#renderButton").html();
+               var template = Handlebars.compile(theTemplateScript)
+               theTemplateScript = template(types);
+               $("#main").append(theTemplateScript);
+          }
+      });
+
+     var rangePicker = Backbone.View.extend({
+            initialize:function(){
+                 this.render();
+            }
+            ,
+            render: function() {
+                 var theTemplateScript = $("#dateRange").html();
+                 $("#rangePicker").append(theTemplateScript);
+            }
+        });
+
+   </script>
+
+   <script>
+   //==========================================================
+   //                   models
+   //===========================================================
+   var dataModel = Backbone.Model.extend({
+   });
+
+   </script>
+
+
+   <script>
+   //==========================================================
+   //                   Routes
+   //===========================================================
+       var appRouter = Backbone.Router.extend({
+           routes: {
+             'insert': 'renderInsert',
+             'view': 'renderView',
+             'admin': 'renderAdmin'
+           },
+           renderInsert: function() {
+               clearDivs();
+               var tableHeadings = new tableHeadingsView();
+               var buttonsViewRender = new buttonsView();
+               buttonsViewRender.render({insert:'show'});
+               $("#addNewBtn").bind("click", function(){addNewRow();});
+               $("#deleteRow").bind("click", function(){removeRow();});
+           },
+           renderView: function() {
+               clearDivs();
+               var tableHeadings = new tableHeadingsView();
+               var buttonsViewRender = new buttonsView();
+               buttonsViewRender.render({view:'show'});
+               new rangePicker();
+               $("#to").datepicker();
+               $("#from").datepicker();
+               $("#addNewBtn").bind("click", function(){addNewRow();});
+               $("#deleteRow").bind("click", function(){removeRow();});
+
+               //get data from db and populate rows
+
+           },
+           renderAdmin: function() {
+               clearDivs();
+               var tableHeadings = new tableHeadingsView();
+               var buttonsViewRender = new buttonsView();
+               buttonsViewRender.render({admin:'show'});
+               new rangePicker();
+               $("#to").datepicker();
+               $("#from").datepicker();
+               $("#addNewBtn").bind("click", function(){addNewRow();});
+               $("#deleteRow").bind("click", function(){removeRow();});
+           }
+         });
+      var app_router = new appRouter();
+      Backbone.history.start();
    </script>
 
 </head>
@@ -61,36 +211,20 @@
         <li><a href="home.html">Home</a></li>
         <li><a href="">Time Sheet</a>
             <ul class="subs">
-                <li><a href="insert.html">Insert</a></li>
-                <li><a href="view.html">View</a></li>
+                <li><a href="#insert">Insert</a></li>
+                <li><a href="#view">View</a></li>
            </ul>
         </li>
         <li><a href="">Admin</a>
             <ul class="subs">
-                <li><a href="adminView.html">View</a></li>
+                <li><a href="#admin">View</a></li>
             </ul>
         </li>
         <li><a href="">About</a></li>
     </ul>
 </div>
-<div class="contents">
-<table class="table table-condensed" id="rowTable">
-<tr class = "active">
-    <th></th>
-    <th>Project Code</th>
-    <th>Project Name</th>
-    <th>Project Phase</th>
-    <th>Classification</th>
-    <th>Activity</th>
-    <th>BugRef</th>
-    <th>Date</th>
-    <th>Effort(Hours)</th>
-</tr>
-</table>
-<button type = "button" id ="addNewBtn" class = "btn btn-info">Add New Row</button>
-<button type="button" class="btn btn-danger">Delete</button>
-<button type = "button" class = "btn btn-success">Save</button>
+<div id="rangePicker" style="position:relative;left:30%;top:25px;"></div>
+<div class="contents" id="main">
 </div>
-
 </body>
 </html>
