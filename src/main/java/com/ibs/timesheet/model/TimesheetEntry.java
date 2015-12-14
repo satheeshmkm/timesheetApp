@@ -1,5 +1,7 @@
 package com.ibs.timesheet.model;
 
+import java.util.Date;
+
 import org.springframework.data.annotation.Id;
 
 public class TimesheetEntry {
@@ -12,7 +14,7 @@ public class TimesheetEntry {
 	public String classification;
 	public String activity;
 	public String bugRef;
-	public String date;
+	public Date date;
 	public String effort;
 	public String approvalStatus;
 	
@@ -22,7 +24,7 @@ public class TimesheetEntry {
 
 	public TimesheetEntry(String projectCode, String projectName,
 			String projectPhase, String classification, String activity,
-			String bugRef, String date, String effort, String approvalStatus) {
+			String bugRef, Date date, String effort, String approvalStatus) {
 		this.projectCode = projectCode;
 		this.projectName = projectName;
 		this.projectPhase = projectPhase;
@@ -35,12 +37,12 @@ public class TimesheetEntry {
 	}
 
 
-	public String getDate() {
+	public Date getDate() {
 		return date;
 	}
 
 
-	public void setDate(String date) {
+	public void setDate(Date date) {
 		this.date = date;
 	}
 
