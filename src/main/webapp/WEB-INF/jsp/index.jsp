@@ -99,22 +99,23 @@
             }
         })
         if(row.length>0){
-            new dataModel(
+            saveDataCollection.add(new dataModel(
             {
              projectCode:row[0],
              projectName:row[1],
              projectPhase:row[2],
              classification:row[3],
              activity:row[4],
-             date:row[5],
-             effort:row[6]
+             bugRef:row[5],
+             date:row[6],
+             effort:row[7],
+
             }
-            ).save();
-            // alert(JSON.stringify(saveDataCollection));
+            ));
             row=[];
         }
       });
-
+   saveDataCollection.save();
    }
    function clearDivs(){
         $("#main").empty();
