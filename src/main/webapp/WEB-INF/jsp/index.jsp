@@ -113,10 +113,9 @@
             }
             ));
             row=[];
-            alert(JSON.stringify(saveDataCollection));
         }
       });
-   saveDataCollection.create();
+   saveDataCollection.save();
    }
    function clearDivs(){
         $("#main").empty();
@@ -180,13 +179,21 @@
    //===========================================================
     var dataModel = Backbone.Model.extend({
 	defaults : {
-		approvalStatus : 'false',
+		projectCode : 'P3',
+		projectName : 'ProjectName1',
+		projectPhase : 'ProjectPhase1',
+		classification : 'ADMIN',
+		activity : 'TrainingActivity',
+		bugRef : 'Bug1',
+		date : '2015-12-16T04:54:07.536Z',
+		effort : 'Effort1',
+		approvalStatus : 'PendingApproval'
 	},
 
 	initialize : function() {
 		console.log("Model Initialized");
 	},
-	url : '/saveTimesheet'
+	 url : '/saveTimesheet'
     })
    </script>
 
@@ -196,7 +203,17 @@
    //========================================================
     var DataCollection = Backbone.Collection.extend({
         model:dataModel,
-        url : '/saveTimesheet'
+        url: function() { 
+    	   return '/saveTimesheet'; 
+    	   },
+    	save: function(){
+    	  Backbone.sync('create', this, {
+    		  success: function() {
+    			  console.log('Saved!');     
+    			  }  
+			});  
+    	}
+        
     });
 
    </script>
