@@ -99,7 +99,7 @@
             }
         })
         if(row.length>0){
-            saveDataCollection.add(new dataModel(
+            new dataModel(
             {
              projectCode:row[0],
              projectName:row[1],
@@ -109,8 +109,8 @@
              date:row[5],
              effort:row[6]
             }
-            ));
-            alert(saveDataCollection);
+            ).save();
+            // alert(JSON.stringify(saveDataCollection));
             row=[];
         }
       });
@@ -184,33 +184,7 @@
 	initialize : function() {
 		console.log("Model Initialized");
 	},
-
-	validate : function(attrs) {
-		alert(attrs);
-		if (!attrs.projectCode) {
-			return 'Please fill Project Code.';
-		}
-		if (!attrs.projectName) {
-			return 'Please fill Project Name field.';
-		}
-		if (!attrs.projectPhase) {
-			return 'Please fill Project Phase field.';
-		}
-		if (!attrs.classification) {
-			return 'Please fill Project Classification field.';
-		}
-		if (!attrs.activity) {
-			return 'Please fill Project Activity field.';
-		}
-		if (!date.date) {
-			return 'Please fill Date field.';
-		}
-		if (!date.effort) {
-			return 'Please fill Effort field.';
-		}
-	},
-
-	url : '/'
+	url : '/saveTimesheet'
     })
    </script>
 
