@@ -113,9 +113,10 @@
             }
             ));
             row=[];
+            alert(JSON.stringify(saveDataCollection));
         }
       });
-   saveDataCollection.save();
+   saveDataCollection.create();
    }
    function clearDivs(){
         $("#main").empty();
