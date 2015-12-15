@@ -29,9 +29,14 @@ public class TimesheetController {
 
 	@RequestMapping(value = "/saveTimesheet", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE, headers = "content-type=application/x-www-form-urlencoded")
 	public ResponseEntity<List<TimesheetEntry>> submitTimesheet(
-			@RequestBody List<TimesheetEntry> tmsEntries) {
-		List<TimesheetEntry> tmsEntryLst = tmsService
-				.submitTimesheet(tmsEntries);
+			@RequestBody Object tmsEntries1
+			/*@RequestBody List<TimesheetEntry> tmsEntries*/) {
+		System.out.println("InputJSON-->" + tmsEntries1.toString());
+		List<TimesheetEntry> tmsEntries = null;//
+		List<TimesheetEntry> tmsEntryLst = null;
+		if (!CollectionUtils.isEmpty(tmsEntries)) {
+			tmsEntryLst = tmsService.submitTimesheet(tmsEntries);
+		}
 		if (!CollectionUtils.isEmpty(tmsEntryLst)) {
 			return new ResponseEntity<List<TimesheetEntry>>(tmsEntryLst,
 					HttpStatus.OK);

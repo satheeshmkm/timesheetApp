@@ -34,10 +34,10 @@ public class TmsServiceImpl implements TmsService {
 
 	@Override
 	public List<TimesheetEntry> listTimesheet(String startDate, String endDate) {
-		Date sDate = TimesheetUtil.toDate(startDate);
-		Date eDate = TimesheetUtil.toDate(endDate);
 		List<TimesheetEntry> tmsEnties = null;
 		if (!StringUtils.isEmpty(startDate) && !StringUtils.isEmpty(startDate)) {
+			Date sDate = TimesheetUtil.toDate(startDate);
+			Date eDate = TimesheetUtil.toDate(endDate);
 			tmsEnties = entiresRepo.findTmsEntiresByDateBetween(sDate, eDate);
 		} else {
 			tmsEnties = entiresRepo.findAll();
