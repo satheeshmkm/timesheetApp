@@ -31,14 +31,14 @@
             {{#if this.insert}}
                 <button type = "button" id ="addNewBtn" class = "btn btn-info">Add New Row</button>
                 <button type="button" id="deleteRow" class="btn btn-danger">Delete</button>
-                <button type = "button" class = "btn btn-success">Save</button>
+                <button type = "button" id="save" class = "btn btn-success">Save</button>
             {{/if}}
             {{#if this.admin}}
-                <button type = "button" class = "btn btn-success">Approve</button>
-                <button type="button" id="deleteRow" class="btn btn-danger">Reject</button>
+                <button type = "button" id="approve" class = "btn btn-success">Approve</button>
+                <button type="button" id="reject" class="btn btn-danger">Reject</button>
             {{/if}}
             {{#if this.view}}
-                <button type = "button" class = "btn btn-success">Send For Approval</button>
+                <button type = "button" id="sendForApproval" class = "btn btn-success">Send For Approval</button>
                 <button type="button" id="deleteRow" class="btn btn-danger">Delete</button>
             {{/if}}
     </script>
@@ -76,8 +76,7 @@
    <script>
 
 	function addNewRow() {
-	  var theTemplateScript = $("#tableRows").html();
-	  $("#rowTable").append(theTemplateScript);
+	  new insertView({});
 	  $("input[name^='datePicker']").datepicker();
 	}
 
@@ -87,6 +86,35 @@
                this.parentElement.parentElement.remove();
             }
          });
+   }
+   function saveRow(){
+      var type;
+      var row = [];
+      var saveDataCollection = new DataCollection();
+      $('#rowTable').children().each(function(){
+        $(this).children().each(function(){
+            type = $(this).children().attr('type');
+            if(type == "text"){
+                row.push($(this).children().val());
+            }
+        })
+        if(row.length>0){
+            saveDataCollection.add(new dataModel(
+            {
+             projectCode:row[0],
+             projectName:row[1],
+             projectPhase:row[2],
+             classification:row[3],
+             activity:row[4],
+             date:row[5],
+             effort:row[6]
+            }
+            ));
+            alert(saveDataCollection);
+            row=[];
+        }
+      });
+
    }
    function clearDivs(){
         $("#main").empty();
@@ -111,14 +139,14 @@
    });
 
     var insertView = Backbone.View.extend({
-       initialize:function(){
-            this.render();
+       initialize:function(model){
+            this.render(model);
        }
        ,
        render: function(model) {
             var theTemplateScript = $("#tableRows").html();
             var template = Handlebars.compile(theTemplateScript);
-            $("#main").append(template(model));
+            $("#rowTable").append(template(model));
        }
    });
 
@@ -148,11 +176,54 @@
    //==========================================================
    //                   models
    //===========================================================
-   var dataModel = Backbone.Model.extend({
-   });
+    var dataModel = Backbone.Model.extend({
+	defaults : {
+		approvalStatus : 'false',
+	},
 
+	initialize : function() {
+		console.log("Model Initialized");
+	},
+
+	validate : function(attrs) {
+		alert(attrs);
+		if (!attrs.projectCode) {
+			return 'Please fill Project Code.';
+		}
+		if (!attrs.projectName) {
+			return 'Please fill Project Name field.';
+		}
+		if (!attrs.projectPhase) {
+			return 'Please fill Project Phase field.';
+		}
+		if (!attrs.classification) {
+			return 'Please fill Project Classification field.';
+		}
+		if (!attrs.activity) {
+			return 'Please fill Project Activity field.';
+		}
+		if (!date.date) {
+			return 'Please fill Date field.';
+		}
+		if (!date.effort) {
+			return 'Please fill Effort field.';
+		}
+	},
+
+	url : '/'
+    })
    </script>
 
+   <script>
+   //========================================================
+   //                   Collection
+   //========================================================
+    var DataCollection = Backbone.Collection.extend({
+        model:dataModel,
+        url : '/saveTimesheet'
+    });
+
+   </script>
 
    <script>
    //==========================================================
@@ -171,6 +242,7 @@
                buttonsViewRender.render({insert:'show'});
                $("#addNewBtn").bind("click", function(){addNewRow();});
                $("#deleteRow").bind("click", function(){removeRow();});
+               $("#save").bind("click", function(){saveRow();});
            },
            renderView: function() {
                clearDivs();
