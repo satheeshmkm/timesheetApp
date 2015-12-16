@@ -61,7 +61,7 @@
 
     <script id="tableRows" type="text/x-handlebars-template">
       <tr>
-        <td class="tdHeight"><input type="checkbox" name="delTrue">&nbsp</td>
+        <td class="tdHeight"><input type="checkbox" name="delTrue" {{#if this.id}} value="{{this.id}}"{{/if}}>&nbsp</td>
       	<td class="tdHeight"><input type = "text" {{#if this.projectCode}} value="{{this.projectCode}}" disabled {{/if}} class = "form-control" /></td>
 	    <td class="tdHeight"><input type = "text" {{#if this.projectName}} value="{{this.projectName}}" disabled {{/if}} class = "form-control" /></td>
       	<td class="tdHeight"><input type = "text" {{#if this.projectPhase}} value="{{this.projectPhase}}" disabled {{/if}} class = "form-control" /></td>
@@ -76,7 +76,7 @@
    <script>
 
 	function addNewRow() {
-	  new insertView({});
+	  new insertView(new dataModel());
 	  $("input[name^='datePicker']").datepicker({dateFormat: "yy-mm-dd"});
 	}
 
@@ -90,9 +90,7 @@
    function renderTableWithData(){
         var fetchData = new DataCollection();
         fetchData.setRestCall($("#from").val(),$("#to").val());
-        fetchData.fetch();
-        alert(JSON.stringify(fetchData));
-
+        fetchData.fetchData();
    }
 
    function saveRow(){
@@ -153,9 +151,11 @@
        }
        ,
        render: function(model) {
+            //alert(JSON.stringify(model));
             var theTemplateScript = $("#tableRows").html();
             var template = Handlebars.compile(theTemplateScript);
-            $("#rowTable").append(template(model));
+            var compile = template(model.toJSON());
+            $("#rowTable").append(compile);
        }
    });
 
@@ -177,8 +177,6 @@
                  var theTemplateScript = $("#dateRange").html();
                  $("#rangePicker").append(theTemplateScript);
             }
-
-
         });
 
    </script>
@@ -222,12 +220,22 @@
 			});  
     	},
     	setRestCall:function(startDate,endDate){
-    	    alert(this.url);
     	    this.url = "listTimesheet?startDate="+startDate+"&endDate="+endDate;
-    	    alert(this.url);
-
-    	}
-        
+    	},
+    	fetchData:function(){
+            this.fetch({
+                        success: this.fetchSuccess,
+                        error: this.fetchError
+                    });
+       	},
+       	fetchSuccess:function(collection, response){
+           collection.each(function(model, index, list)
+                          {    new insertView(model);
+                          });
+       	},
+        fetchError:function(collection, response){
+            alert("No record Found !! ");
+        }
     });
 
    </script>
@@ -272,8 +280,8 @@
                var buttonsViewRender = new buttonsView();
                buttonsViewRender.render({admin:'show'});
                new rangePicker();
-               $("#to").datepicker();
-               $("#from").datepicker();
+               $("#to").datepicker({dateFormat: "yy-mm-dd"});
+               $("#from").datepicker({dateFormat: "yy-mm-dd"});
                $("#addNewBtn").bind("click", function(){addNewRow();});
                $("#deleteRow").bind("click", function(){removeRow();});
            }
