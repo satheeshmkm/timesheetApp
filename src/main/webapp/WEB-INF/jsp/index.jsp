@@ -284,6 +284,7 @@
                $("#from").datepicker({dateFormat: "yy-mm-dd"});
                $("#addNewBtn").bind("click", function(){addNewRow();});
                $("#deleteRow").bind("click", function(){removeRow();});
+               $("#load").bind("click", function(){renderTableWithData();});
            }
          });
       var app_router = new appRouter();
