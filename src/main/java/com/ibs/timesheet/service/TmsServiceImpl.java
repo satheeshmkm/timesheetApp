@@ -49,8 +49,9 @@ public class TmsServiceImpl implements TmsService {
 	public List<TimesheetEntry> updateTimesheet(List<TimesheetEntry> tmsEntries) {
 		List<TimesheetEntry> updatedTmsEnties = new ArrayList<TimesheetEntry>();
 		for (TimesheetEntry entry : tmsEntries) {
-			entry.setApprovalStatus("Submitted for Approval");
-			updatedTmsEnties.add(entry);
+			TimesheetEntry entry2 = entiresRepo.findOne(entry.getId());
+			entry2.setApprovalStatus("Submitted for Approval");
+			updatedTmsEnties.add(entry2);
 		}
 		return entiresRepo.save(updatedTmsEnties);
 	}
