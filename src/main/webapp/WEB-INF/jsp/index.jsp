@@ -93,6 +93,27 @@
         fetchData.fetchData();
    }
 
+   function submitForApp(){
+          var appCollection = new DataCollection();
+          $("input[name^='delTrue']").each(function() {
+               if($(this).prop("checked") == true){
+                  appCollection.add(new dataModel({id:$(this).val()}));
+               }
+            });
+            appCollection.setUrl("/submitForApproval");
+            appCollection.save();
+   }
+   function submitAccOrRe(status){
+          var appCollection = new DataCollection();
+          $("input[name^='delTrue']").each(function() {
+               if($(this).prop("checked") == true){
+                  appCollection.add(new dataModel({id:$(this).val(),approvalStatus:status}));
+               }
+            });
+            appCollection.setUrl("/acceptOrReject");
+            appCollection.save();
+   }
+
    function saveRow(){
       var type;
       var row = [];
@@ -121,6 +142,7 @@
             row=[];
         }
       });
+   saveDataCollection.setUrl('/saveTimesheet');
    saveDataCollection.save();
    }
    function clearDivs(){
@@ -200,8 +222,7 @@
 
 	initialize : function() {
 		console.log("Model Initialized");
-	},
-	 url : '/saveTimesheet'
+	}
     })
    </script>
 
@@ -211,8 +232,7 @@
    //========================================================
     var DataCollection = Backbone.Collection.extend({
         model:dataModel,
-        url:'/saveTimesheet',
-    	save: function(){
+        save: function(){
     	  Backbone.sync('create', this, {
     		  success: function() {
     			  alert("Saved");
@@ -235,6 +255,9 @@
        	},
         fetchError:function(collection, response){
             alert("No record Found !! ");
+        },
+        setUrl:function(newUrl){
+            this.url = newUrl;
         }
     });
 
@@ -270,9 +293,7 @@
                $("#addNewBtn").bind("click", function(){addNewRow();});
                $("#deleteRow").bind("click", function(){removeRow();});
                $("#load").bind("click", function(){renderTableWithData();});
-
-               //get data from db and populate rows
-
+               $("#sendForApproval").bind("click", function(){submitForApp();});
            },
            renderAdmin: function() {
                clearDivs();
@@ -284,6 +305,10 @@
                $("#from").datepicker({dateFormat: "yy-mm-dd"});
                $("#addNewBtn").bind("click", function(){addNewRow();});
                $("#deleteRow").bind("click", function(){removeRow();});
+               $("#load").bind("click", function(){renderTableWithData();});
+               $("#approve").bind("click", function(){submitAccOrRe("approve");});
+               $("#reject").bind("click", function(){submitAccOrRe("reject");});
+
            }
          });
       var app_router = new appRouter();
@@ -296,7 +321,7 @@
 <h2 class="heading">Time Sheet Management System</h2>
 <div class="menu" >
     <ul class="nav">
-        <li><a href="home.html">Home</a></li>
+        <li><a href="">Home</a></li>
         <li><a href="">Time Sheet</a>
             <ul class="subs">
                 <li><a href="#insert">Insert</a></li>
@@ -314,6 +339,8 @@
 
 <div id="rangePicker" style="position:relative;left:30%;top:25px;"></div>
 <div class="contents" id="main">
+<img src="http://www.timesheettips.com/wp-content/uploads/2015/08/Time-Tracker-App.png"/>
+<h3 style="position:relative;top:-250px;left:50%;">TimeSheet Management System</h3>
 </div>
 </body>
 </html>
