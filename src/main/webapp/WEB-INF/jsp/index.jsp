@@ -23,7 +23,7 @@
     <script id="dateRange" type="text/x-handlebars-template">
     <b>From </b><input type = "text" id="from" style="width:250px;display: inline;" class = "form-control"/>
     <b>To </b><input type = "text" id="to"  style="width:250px;display: inline;" class = "form-control"/>
-    <button type="button" id="deleteRow" class="btn-default">Show</button>
+    <button type="button" id="load" class="btn-default">Show</button>
     </script>
 
 
@@ -77,7 +77,7 @@
 
 	function addNewRow() {
 	  new insertView({});
-	  $("input[name^='datePicker']").datepicker();
+	  $("input[name^='datePicker']").datepicker({dateFormat: "yy-mm-dd"});
 	}
 
    function removeRow(){
@@ -87,6 +87,14 @@
             }
          });
    }
+   function renderTableWithData(){
+        var fetchData = new DataCollection();
+        fetchData.setRestCall($("#from").val(),$("#to").val());
+        fetchData.fetch();
+        alert(JSON.stringify(fetchData));
+
+   }
+
    function saveRow(){
       var type;
       var row = [];
@@ -169,6 +177,8 @@
                  var theTemplateScript = $("#dateRange").html();
                  $("#rangePicker").append(theTemplateScript);
             }
+
+
         });
 
    </script>
@@ -179,15 +189,15 @@
    //===========================================================
     var dataModel = Backbone.Model.extend({
 	defaults : {
-		projectCode : 'P3',
-		projectName : 'ProjectName1',
-		projectPhase : 'ProjectPhase1',
-		classification : 'ADMIN',
-		activity : 'TrainingActivity',
-		bugRef : 'Bug1',
-		date : '2015-12-16T04:54:07.536Z',
-		effort : 'Effort1',
-		approvalStatus : 'PendingApproval'
+		projectCode : '',
+		projectName : '',
+		projectPhase : '',
+		classification : '',
+		activity : '',
+		bugRef : '',
+		date : '',
+		effort : '',
+		approvalStatus : ''
 	},
 
 	initialize : function() {
@@ -203,15 +213,19 @@
    //========================================================
     var DataCollection = Backbone.Collection.extend({
         model:dataModel,
-        url: function() { 
-    	   return '/saveTimesheet'; 
-    	   },
+        url:'/saveTimesheet',
     	save: function(){
     	  Backbone.sync('create', this, {
     		  success: function() {
-    			  console.log('Saved!');     
+    			  alert("Saved");
     			  }  
 			});  
+    	},
+    	setRestCall:function(startDate,endDate){
+    	    alert(this.url);
+    	    this.url = "listTimesheet?startDate="+startDate+"&endDate="+endDate;
+    	    alert(this.url);
+
     	}
         
     });
@@ -243,10 +257,11 @@
                var buttonsViewRender = new buttonsView();
                buttonsViewRender.render({view:'show'});
                new rangePicker();
-               $("#to").datepicker();
-               $("#from").datepicker();
+               $("#to").datepicker({dateFormat: "yy-mm-dd"});
+               $("#from").datepicker({dateFormat: "yy-mm-dd"});
                $("#addNewBtn").bind("click", function(){addNewRow();});
                $("#deleteRow").bind("click", function(){removeRow();});
+               $("#load").bind("click", function(){renderTableWithData();});
 
                //get data from db and populate rows
 
@@ -288,6 +303,7 @@
         <li><a href="">About</a></li>
     </ul>
 </div>
+
 <div id="rangePicker" style="position:relative;left:30%;top:25px;"></div>
 <div class="contents" id="main">
 </div>
