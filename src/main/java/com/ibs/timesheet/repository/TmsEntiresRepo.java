@@ -11,7 +11,12 @@ import com.ibs.timesheet.model.TimesheetEntry;
 
 @Repository
 public interface TmsEntiresRepo  extends MongoRepository<TimesheetEntry,String>{
-	//@Query("{ 'date' :{'$lt' : ?0} }")
 	@Query("{ 'date' :{'$gt' : ?0, '$lt' : ?1} }")
 	List<TimesheetEntry> findTmsEntiresByDateBetween(Date from, Date to);
+
+	@Query("{ 'date' :{'$gt' : ?0, '$lt' : ?1} ,'approvalStatus':?2}")
+	List<TimesheetEntry> findTmsEntiresBetweenDateByType(Date from, Date to, String status);
+
+	@Query("{ 'approvalStatus':?0}")
+	List<TimesheetEntry> findTmsEntiresByType(String status);
 }

@@ -32,28 +32,59 @@ public class TmsServiceImpl implements TmsService {
 		return tmsEntryLst;
 	}
 
-	@Override
-	public List<TimesheetEntry> listTimesheet(String startDate, String endDate) {
-		List<TimesheetEntry> tmsEnties = null;
-		if (!StringUtils.isEmpty(startDate) && !StringUtils.isEmpty(startDate)) {
-			Date sDate = TimesheetUtil.toDate(startDate);
-			Date eDate = TimesheetUtil.toDate(endDate);
-			tmsEnties = entiresRepo.findTmsEntiresByDateBetween(sDate, eDate);
-		} else {
-			tmsEnties = entiresRepo.findAll();
-		}
-		return tmsEnties;
+@Override
+public List<TimesheetEntry> listTimesheet(String startDate, String endDate, String type) {
+	List<TimesheetEntry> tmsEnties = null;
+	Date sDate = null;
+	Date eDate = null;
+	if (!StringUtils.isEmpty(startDate)) {
+		System.out.println("startDate"+startDate);
+		sDate = TimesheetUtil.toDate(startDate);
 	}
+	if (!StringUtils.isEmpty(endDate)) {
+		System.out.println("endDate"+endDate);
+		eDate = TimesheetUtil.toDate(endDate);
+	}
+	String status = null;
+	if("admin".equalsIgnoreCase(type)){
+		status ="submitted";
+	}
+	if (sDate != null && eDate != null && !StringUtils.isEmpty(status)) {
+		System.out.println("findTmsEntiresBetweenDateByType Executed with sDate=" + sDate + " eDate=" + eDate + "status=" + status);
+		tmsEnties = entiresRepo.findTmsEntiresBetweenDateByType(sDate, eDate, status);
+	} else if (sDate != null && eDate != null) {
+		System.out.println("findTmsEntiresByDateBetween Executed with sDate=" + sDate + " eDate=" + eDate);
+		tmsEnties = entiresRepo.findTmsEntiresByDateBetween(sDate, eDate);
+	} else if (!StringUtils.isEmpty(status)) {
+		System.out.println("findTmsEntiresByType Executed with status=" + status);
+		tmsEnties = entiresRepo.findTmsEntiresByType(status);
+	} else {
+		System.out.println("findAll");
+		tmsEnties = entiresRepo.findAll();
+	}
+	return tmsEnties;
+}
 
 	@Override
 	public List<TimesheetEntry> updateTimesheet(List<TimesheetEntry> tmsEntries) {
 		List<TimesheetEntry> updatedTmsEnties = new ArrayList<TimesheetEntry>();
 		for (TimesheetEntry entry : tmsEntries) {
 			TimesheetEntry entry2 = entiresRepo.findOne(entry.getId());
-			entry2.setApprovalStatus("Submitted for Approval");
+			entry2.setApprovalStatus("submitted");
 			updatedTmsEnties.add(entry2);
 		}
 		return entiresRepo.save(updatedTmsEnties);
 	}
+
+@Override
+public List<TimesheetEntry> acceptOrRejectTimesheet(List<TimesheetEntry> tmsEntries) {
+	List<TimesheetEntry> updatedTmsEnties = new ArrayList<TimesheetEntry>();
+	for (TimesheetEntry entry : tmsEntries) {
+		TimesheetEntry entry2 = entiresRepo.findOne(entry.getId());
+		entry2.setApprovalStatus(entry.getApprovalStatus());
+		updatedTmsEnties.add(entry2);
+	}
+	return entiresRepo.save(updatedTmsEnties);
+}
 
 }

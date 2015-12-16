@@ -87,9 +87,9 @@
             }
          });
    }
-   function renderTableWithData(){
+   function renderTableWithData(type){
         var fetchData = new DataCollection();
-        fetchData.setRestCall($("#from").val(),$("#to").val());
+        fetchData.setRestCall($("#from").val(),$("#to").val(),type);
         fetchData.fetchData();
    }
 
@@ -239,8 +239,8 @@
     			  }  
 			});  
     	},
-    	setRestCall:function(startDate,endDate){
-    	    this.url = "listTimesheet?startDate="+startDate+"&endDate="+endDate;
+    	setRestCall:function(startDate,endDate,type){
+    	    this.url = "listTimesheet?startDate="+startDate+"&endDate="+endDate+"&type="+type;
     	},
     	fetchData:function(){
             this.fetch({
@@ -292,7 +292,7 @@
                $("#from").datepicker({dateFormat: "yy-mm-dd"});
                $("#addNewBtn").bind("click", function(){addNewRow();});
                $("#deleteRow").bind("click", function(){removeRow();});
-               $("#load").bind("click", function(){renderTableWithData();});
+               $("#load").bind("click", function(){renderTableWithData("view");});
                $("#sendForApproval").bind("click", function(){submitForApp();});
            },
            renderAdmin: function() {
@@ -305,7 +305,7 @@
                $("#from").datepicker({dateFormat: "yy-mm-dd"});
                $("#addNewBtn").bind("click", function(){addNewRow();});
                $("#deleteRow").bind("click", function(){removeRow();});
-               $("#load").bind("click", function(){renderTableWithData();});
+               $("#load").bind("click", function(){renderTableWithData("admin");});
                $("#approve").bind("click", function(){submitAccOrRe("approve");});
                $("#reject").bind("click", function(){submitAccOrRe("reject");});
 

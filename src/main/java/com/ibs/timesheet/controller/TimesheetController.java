@@ -48,9 +48,9 @@ public class TimesheetController {
 
 	@RequestMapping(value = "/listTimesheet", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<List<TimesheetEntry>> getTimesheet(
-			@RequestParam String startDate, @RequestParam String endDate) {
+			@RequestParam String startDate, @RequestParam String endDate, @RequestParam String type) {
 		List<TimesheetEntry> tmsEntryLst = tmsService.listTimesheet(startDate,
-				endDate);
+				endDate,type);
 		if (!CollectionUtils.isEmpty(tmsEntryLst)) {
 			return new ResponseEntity<List<TimesheetEntry>>(tmsEntryLst,
 					HttpStatus.OK);
@@ -73,5 +73,19 @@ public class TimesheetController {
 					HttpStatus.INTERNAL_SERVER_ERROR);
 		}
 	}
+
+@RequestMapping(value = "/acceptOrReject", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE, headers = "content-type=application/x-www-form-urlencoded")
+public ResponseEntity<List<TimesheetEntry>> acceptOrRejectTimesheet(
+		                                                           @RequestBody List<TimesheetEntry> tmsEntries) {
+	List<TimesheetEntry> tmsEntryLst = tmsService
+			                                   .acceptOrRejectTimesheet(tmsEntries);
+	if (!CollectionUtils.isEmpty(tmsEntryLst)) {
+		return new ResponseEntity<List<TimesheetEntry>>(tmsEntryLst,
+				                                               HttpStatus.OK);
+	} else {
+		return new ResponseEntity<List<TimesheetEntry>>(tmsEntryLst,
+				                                               HttpStatus.INTERNAL_SERVER_ERROR);
+	}
+}
 
 }
