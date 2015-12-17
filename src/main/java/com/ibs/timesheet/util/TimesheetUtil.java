@@ -13,7 +13,7 @@ public final class TimesheetUtil {
 	public static Date toDate(String inputDate) {
 		Date date = null;
 		try {
-			DateFormat df = new SimpleDateFormat("yyyy-mm-dd");
+			DateFormat df = new SimpleDateFormat("yyyy-MM-dd");
 			date = df.parse(inputDate);
 		} catch (ParseException e) {
 			e.printStackTrace();

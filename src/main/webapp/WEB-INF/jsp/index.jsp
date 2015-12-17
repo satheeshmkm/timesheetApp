@@ -66,7 +66,7 @@
       	<td class="tdHeight"><input type = "text" {{#if this.classification}} value="{{this.classification}}" disabled {{/if}} class = "form-control"/></td>
 	    <td class="tdHeight"><input type = "text" {{#if this.activity}} value="{{this.activity}}" disabled {{/if}} class = "form-control"/></td>
       	<td class="tdHeight"><input type = "text" {{#if this.bugRef}} value="{{this.bugRef}}" disabled {{/if}} class = "form-control"/></td>
-      	<td class="tdHeight"><input type = "text" {{#if this.date}} value="{{this.date}}" disabled {{/if}} name="datePicker" class = "form-control"/></td>
+      	<td class="tdHeight"><input type = "text" {{#if this.date}} value="{{this.date}}" disabled {{else}} name="datePicker"{{/if}} class = "form-control"/></td>
       	<td class="tdHeight"><input type = "text" {{#if this.effort}} value="{{this.effort}}" disabled {{/if}} class = "form-control"/></td>
       </tr>
    </script>
@@ -96,7 +96,7 @@
 
 <div id="rangePicker" style="position:relative;left:30%;top:25px;"></div>
 <div class="contents" id="main">
-<img src="http://www.timesheettips.com/wp-content/uploads/2015/08/Time-Tracker-App.png"/>
+<img src="img/Time-Tracker-App.png"/>
 <h3 style="position:relative;top:-250px;left:50%;">TimeSheet Management System</h3>
 </div>
 </body>

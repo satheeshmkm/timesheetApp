@@ -14,6 +14,7 @@
    function renderTableWithData(type){
         var fetchData = new DataCollection();
         fetchData.setRestCall($("#from").val(),$("#to").val(),type);
+        $('#rowTable tr').slice(1).remove();
         fetchData.fetchData();
    }
 
@@ -26,6 +27,7 @@
             });
             appCollection.setUrl("/submitForApproval");
             appCollection.save();
+            renderTableWithData("view");
    }
    function submitAccOrRe(status){
           var appCollection = new DataCollection();
@@ -36,6 +38,7 @@
             });
             appCollection.setUrl("/acceptOrReject");
             appCollection.save();
+            renderTableWithData("admin");
    }
 
    function saveRow(){
@@ -98,6 +101,7 @@
             //alert(JSON.stringify(model));
             var theTemplateScript = $("#tableRows").html();
             var template = Handlebars.compile(theTemplateScript);
+            model.set({date:new Date(model.get("date"))});
             var compile = template(model.toJSON());
             $("#rowTable").append(compile);
        }
