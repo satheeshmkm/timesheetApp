@@ -58,7 +58,7 @@
     </script>
 
     <script id="tableRows" type="text/x-handlebars-template">
-      <tr>
+      <tr bgcolor="{{#rowColour}}{{this.approvalStatus}}{{/rowColour}}">
         <td class="tdHeight"><input type="checkbox" name="delTrue" {{#if this.id}} value="{{this.id}}"{{/if}}>&nbsp</td>
       	<td class="tdHeight"><input type = "text" {{#if this.projectCode}} value="{{this.projectCode}}" disabled {{/if}} class = "form-control" /></td>
 	    <td class="tdHeight"><input type = "text" {{#if this.projectName}} value="{{this.projectName}}" disabled {{/if}} class = "form-control" /></td>
