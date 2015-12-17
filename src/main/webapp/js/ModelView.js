@@ -233,3 +233,12 @@
          });
       var app_router = new appRouter();
       Backbone.history.start();
+      Handlebars.registerHelper('rowColour', function(options) {
+        if(options.fn(this) == "approve"){
+           return "#e5ffe5";
+        }
+        if(options.fn(this) == "submitted"){
+          return "#d1d1e0";
+        }
+         return "#ffe5e5";
+      });
